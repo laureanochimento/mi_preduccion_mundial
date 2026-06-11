@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predicciones Mundial 2026 - Análisis de Escenarios</title>
+    <title>Dashboard Mundial 2026 - 3 Escenarios Completos</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
+            --bg-color: #0b0f19;
+            --card-bg: #151f32;
+            --match-bg: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #e11d48;
-            --accent-hover: #be123c;
             --sc1: #3b82f6; /* Lógico */
             --sc2: #f59e0b; /* Caos */
             --sc3: #10b981; /* Comercial */
@@ -20,409 +20,398 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; min-height: 100vh;
         }
         header {
-            background-color: #020617;
-            padding: 20px;
-            text-align: center;
+            background-color: #030712;
+            padding: 20px; text-align: center;
             border-bottom: 3px solid var(--accent);
         }
         h1 { margin: 0; font-size: 1.8rem; }
-        .subtitle { color: var(--text-muted); margin-top: 5px; font-size: 1rem; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-top: 5px; }
+        
+        /* Navigation Tabs */
+        .nav-container {
+            display: flex; justify-content: center; background: #0f172a;
+            padding: 10px; gap: 10px; overflow-x: auto;
+            border-bottom: 1px solid #1e293b;
+        }
+        .nav-btn {
+            background: #1e293b; color: var(--text-muted); border: none;
+            padding: 10px 16px; border-radius: 6px; cursor: pointer;
+            font-weight: 600; white-space: nowrap; transition: 0.2s;
+        }
+        .nav-btn.active { background: var(--accent); color: white; }
         
         .container {
-            flex-grow: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            width: 95%;
+            flex-grow: 1; max-width: 1600px; margin: 0 auto; padding: 20px; width: 95%;
         }
-        
-        .slide { display: none; animation: fadeIn 0.4s ease-in-out; }
-        .slide.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-            border-top: 4px solid #333;
-        }
-        .card.sc1 { border-color: var(--sc1); }
-        .card.sc2 { border-color: var(--sc2); }
-        .card.sc3 { border-color: var(--sc3); }
-        
-        .card-header {
-            text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #334155;
-            margin-bottom: 15px;
-        }
-        .card-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; }
-        .probability {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .match {
-            background: #0f172a;
-            margin-bottom: 10px;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 3px solid #334155;
-        }
-        .match-title { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 5px; }
-        .winner { color: #fff; font-weight: 700; }
-        .loser { color: var(--text-muted); }
-        .note { font-size: 0.85rem; color: #cbd5e1; font-style: italic; line-height: 1.4; }
-        
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #020617;
-            padding: 15px 40px;
-            border-top: 1px solid #334155;
-        }
-        button {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button:hover { background-color: var(--accent-hover); }
-        button:disabled { background-color: #334155; color: #64748b; cursor: not-allowed; }
-        .progress { color: var(--text-muted); font-weight: 600; }
 
-        /* Iconos para finales */
-        .champion { font-size: 1.2rem; color: gold; text-align: center; margin-top: 10px; }
+        /* Grid System for 3 Scenarios */
+        .scenarios-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;
+        }
+        
+        .column {
+            background: var(--card-bg); border-radius: 12px; padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            border-top: 5px solid #334155;
+        }
+        .column.sc1 { border-color: var(--sc1); }
+        .column.sc2 { border-color: var(--sc2); }
+        .column.sc3 { border-color: var(--sc3); }
+        
+        .col-header { text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1e293b; }
+        .col-header h2 { margin: 0; font-size: 1.3rem; }
+        .probability { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; margin-top: 5px; background: rgba(0,0,0,0.2); }
+        
+        /* Table Standings style */
+        .standings-box { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border-left: 4px solid var(--accent); }
+        .standings-title { font-weight: bold; margin-bottom: 5px; color: #cbd5e1; }
+        
+        /* Matches style */
+        .match-card {
+            background: var(--match-bg); border-radius: 8px; padding: 12px; margin-bottom: 12px;
+            border-left: 3px solid #475569;
+        }
+        .match-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+        .match-teams { display: flex; justify-content: space-between; font-weight: bold; font-size: 1rem; margin-bottom: 6px; }
+        .match-just { font-size: 0.85rem; color: #cbd5e1; font-style: italic; line-height: 1.3; background: rgba(0,0,0,0.15); padding: 6px; border-radius: 4px; }
+        .cert-badge { color: #f59e0b; font-weight: bold; }
+        
+        .champion-banner {
+            text-align: center; background: linear-gradient(135deg, #1e1b4b, #311042);
+            padding: 15px; border-radius: 8px; border: 2px solid gold; margin-top: 15px;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>🏆 Simulador Mundial 2026: Análisis de 3 Escenarios</h1>
-    <div class="subtitle">Comparativa Fase por Fase (Lógico vs. Caos vs. Negocio)</div>
+    <h1>🏆 Simulador Estratégico Mundial 2026</h1>
+    <div class="subtitle">Análisis Integral de 104 Partidos bajo 3 Matrices de Probabilidad</div>
 </header>
 
-<div class="container">
-    <!-- SLIDE 1: INTRO Y CONTEXTO -->
-    <div class="slide active" id="slide-0">
-        <h2 style="text-align: center; color: var(--accent);">Definición de los Escenarios</h2>
-        <p style="text-align: center; color: var(--text-muted); max-width: 800px; margin: 0 auto 30px;">
-            Antes de avanzar por las llaves eliminatorias, aquí se presentan las bases de cada línea de simulación.
-        </p>
-        <div class="grid-3">
-            <div class="card sc1">
-                <div class="card-header">
-                    <h2>📊 Escenario 1: Base (Lógico)</h2>
-                    <span class="probability" style="color: var(--sc1);">Factibilidad: 20%</span>
-                </div>
-                <p><strong>El fútbol es táctica y actualidad.</strong></p>
-                <p class="note">Asume que las bajas confirmadas pesan, las jerarquías se imponen en partidos largos y el rendimiento reciente dicta sentencia. Se corrige la irrealidad estadística (Croacia pierde en penales, Inglaterra vence a México).</p>
-            </div>
-            <div class="card sc2">
-                <div class="card-header">
-                    <h2>🌪️ Escenario 2: Caos (Sensibilidad)</h2>
-                    <span class="probability" style="color: var(--sc2);">Factibilidad: 10%</span>
-                </div>
-                <p><strong>El fútbol es impredecible.</strong></p>
-                <p class="note">Se activan las variables disruptivas mencionadas: Uruguay gana su grupo forzando un cruce letal España-Argentina tempranero. La fatiga golpea a los veteranos (Messi, Modric) y los cruces se desordenan.</p>
-            </div>
-            <div class="card sc3">
-                <div class="card-header">
-                    <h2>💰 Escenario 3: "El Negocio"</h2>
-                    <span class="probability" style="color: var(--sc3);">Factibilidad: 35%</span>
-                </div>
-                <p><strong>El fútbol es una industria de billones.</strong></p>
-                <p class="note">Sin arreglos descarados, pero con un "sesgo comercial": ante la duda, el VAR, las tarjetas y los minutos extra benefician a los mercados gigantes (EEUU local, el Azteca lleno, Inglaterra, Brasil) y cuidan a las superestrellas de TV (Messi vs CR7 vs Mbappé).</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 2: DIECISEISAVOS -->
-    <div class="slide" id="slide-1">
-        <h2 style="text-align: center;">⚔️ Dieciseisavos de Final (Highlights)</h2>
-        <div class="grid-3">
-            <div class="card sc1">
-                <div class="card-header"><h2>📊 Base</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇦🇷 Argentina</span> <span>vs</span> <span class="loser">🇺🇾 Uruguay</span></div>
-                    <span class="note">1-0. Clásico cerrado, genialidad de Messi. Pasa la lógica del campeón.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇲🇽 México</span> <span>vs</span> <span class="loser">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia</span></div>
-                    <span class="note">2-1. El Azteca empuja, México sobrevive.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇵🇹 Portugal</span> <span>vs</span> <span class="loser">🇵🇾 Paraguay</span></div>
-                    <span class="note">2-0. Jerarquía de CR7 y Bruno Fernandes.</span>
-                </div>
-            </div>
-            <div class="card sc2">
-                <div class="card-header"><h2>🌪️ Caos</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇪🇸 España</span> <span>vs</span> <span class="loser">🇦🇷 Argentina</span></div>
-                    <span class="note">2-1. ¡BOMBA! Uruguay ganó el Grupo H. Cruce letal anticipado. España elimina al campeón prematuramente.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇺🇾 Uruguay</span> <span>vs</span> <span class="loser">🇦🇹 Austria</span></div>
-                    <span class="note">2-0. Bielsa arrasa tras ganar su grupo.</span>
-                </div>
-            </div>
-            <div class="card sc3">
-                <div class="card-header"><h2>💰 Negocio</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇺🇸 EEUU</span> <span>vs</span> <span class="loser">🇩🇿 Argelia</span></div>
-                    <span class="note">2-1. Penal cobrado desde el VAR al minuto 94 para Pulisic. El anfitrión avanza sin desgaste extra.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇦🇷 Argentina</span> <span>vs</span> <span class="loser">🇺🇾 Uruguay</span></div>
-                    <span class="note">2-0. Uruguay se llena de amarillas rápido. El juego fuerte charrúa es penalizado por orden de FIFA.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 3: OCTAVOS DE FINAL -->
-    <div class="slide" id="slide-2">
-        <h2 style="text-align: center;">🔥 Octavos de Final</h2>
-        <div class="grid-3">
-            <div class="card sc1">
-                <div class="card-header"><h2>📊 Base</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</span> <span>vs</span> <span class="loser">🇲🇽 México</span></div>
-                    <span class="note">2-1 (TE). Corrección estadística: Bellingham silencia el Azteca. No hay "5to partido".</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇧🇷 Brasil</span> <span>vs</span> <span class="loser">🇳🇴 Noruega</span></div>
-                    <span class="note">3-2. Brasil sufre con Haaland pero el ataque pesa más.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇺🇸 EEUU</span> <span>vs</span> <span class="loser">🇧🇪 Bélgica</span></div>
-                    <span class="note">3-2 (TE). Desgaste brutal del anfitrión pero avanza.</span>
-                </div>
-            </div>
-            <div class="card sc2">
-                <div class="card-header"><h2>🌪️ Caos</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇧🇷 Brasil</span> <span>vs</span> <span class="loser">🇫🇷 Francia</span></div>
-                    <span class="note">2-1. (Domino del Grupo I). Francia cae ante Brasil temprano.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇪🇸 España</span> <span>vs</span> <span class="loser">🇹🇷 Turquía</span></div>
-                    <span class="note">3-0. El camino se le limpia a España sin Argentina.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</span> <span>vs</span> <span class="loser">🇲🇽 México</span></div>
-                    <span class="note">3-0. Sin "efecto épico", goleada inglesa sencilla.</span>
-                </div>
-            </div>
-            <div class="card sc3">
-                <div class="card-header"><h2>💰 Negocio</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇲🇽 México</span> <span>vs</span> <span class="loser">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</span></div>
-                    <span class="note">1-1 (Mex gana penales). El "Beneficio del Azteca". Gol anulado a Kane por offside milimétrico. México logra el 5to partido comercial.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇺🇸 EEUU</span> <span>vs</span> <span class="loser">🇧🇪 Bélgica</span></div>
-                    <span class="note">2-0. Arbitraje totalmente proteccionista, EEUU llega fresco.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇵🇹 Portugal</span> <span>vs</span> <span class="loser">🇨🇦 Canadá</span></div>
-                    <span class="note">2-1. El negocio dicta que CR7 debe llegar a instancias decisivas.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 4: CUARTOS DE FINAL -->
-    <div class="slide" id="slide-3">
-        <h2 style="text-align: center;">💎 Cuartos de Final</h2>
-        <div class="grid-3">
-            <div class="card sc1">
-                <div class="card-header"><h2>📊 Base</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇫🇷 Francia</span> <span>vs</span> <span class="loser">🇲🇦 Marruecos</span></div>
-                    <span class="note">1-0. Oficio francés por la mínima.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇪🇸 España</span> <span>vs</span> <span class="loser">🇺🇸 EEUU</span></div>
-                    <span class="note">2-0. España duerme la pelota. Fin del sueño yanqui.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇧🇷 Brasil</span> <span>vs</span> <span class="loser">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</span></div>
-                    <span class="note">2-1. Brasil se impone ante el pragmatismo inglés.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇦🇷 Argentina</span> <span>vs</span> <span class="loser">🇵🇹 Portugal</span></div>
-                    <span class="note">2-1. Messi elimina a Cristiano. Abrazo de época.</span>
-                </div>
-            </div>
-            <div class="card sc2">
-                <div class="card-header"><h2>🌪️ Caos</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇩🇪 Alemania</span> <span>vs</span> <span class="loser">🇲🇦 Marruecos</span></div>
-                    <span class="note">2-0. Sin Francia de por medio, Alemania revive.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇪🇸 España</span> <span>vs</span> <span class="loser">🇺🇸 EEUU</span></div>
-                    <span class="note">3-1. Demasiada jerarquía para los norteamericanos.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇧🇷 Brasil</span> <span>vs</span> <span class="loser">🇺🇾 Uruguay</span></div>
-                    <span class="note">1-0. Brasil se venga del centenariazo y la Copa América.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</span> <span>vs</span> <span class="loser">🇵🇹 Portugal</span></div>
-                    <span class="note">2-0. Fin del torneo para CR7 sin poesía.</span>
-                </div>
-            </div>
-            <div class="card sc3">
-                <div class="card-header"><h2>💰 Negocio</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇫🇷 Francia</span> <span>vs</span> <span class="loser">🇲🇦 Marruecos</span></div>
-                    <span class="note">2-0. Mbappé vende más.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇺🇸 EEUU</span> <span>vs</span> <span class="loser">🇪🇸 España</span></div>
-                    <span class="note">2-1. ¡BOMBA COMERCIAL! Expulsión dudosa en España y penal para USA. El anfitrión al top 4 rompe récords de rating mundial.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇧🇷 Brasil</span> <span>vs</span> <span class="loser">🇲🇽 México</span></div>
-                    <span class="note">3-2. El mejor partido en ventas de TV. Brasil impone la chapa.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇦🇷 Argentina</span> <span>vs</span> <span class="loser">🇵🇹 Portugal</span></div>
-                    <span class="note">2-2 (ARG en penales). El guion perfecto. Empate agónico y el Dibu clasifica a la AFA, máxima tensión televisiva.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 5: SEMIFINALES -->
-    <div class="slide" id="slide-4">
-        <h2 style="text-align: center;">🌟 Semifinales</h2>
-        <div class="grid-3">
-            <div class="card sc1">
-                <div class="card-header"><h2>📊 Base</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇪🇸 España</span> <span>vs</span> <span class="loser">🇫🇷 Francia</span></div>
-                    <span class="note">2-1. Lamine Yamal verdugo de nuevo (calco de la Euro).</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇦🇷 Argentina</span> <span>vs</span> <span class="loser">🇧🇷 Brasil</span></div>
-                    <span class="note">1-1 (ARG gana en penales). Superclásico épico. El Dibu saca chapa ante Vini.</span>
-                </div>
-            </div>
-            <div class="card sc2">
-                <div class="card-header"><h2>🌪️ Caos</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇪🇸 España</span> <span>vs</span> <span class="loser">🇩🇪 Alemania</span></div>
-                    <span class="note">2-0. España es imparable cuando no se desgasta.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</span> <span>vs</span> <span class="loser">🇧🇷 Brasil</span></div>
-                    <span class="note">1-0. Inglaterra duerme a un Brasil cansado. Sorpresa táctica.</span>
-                </div>
-            </div>
-            <div class="card sc3">
-                <div class="card-header"><h2>💰 Negocio</h2></div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇫🇷 Francia</span> <span>vs</span> <span class="loser">🇺🇸 EEUU</span></div>
-                    <span class="note">3-1. Fin del cuento de hadas. La FIFA ya ordeñó el mercado estadounidense; necesitan a Europa en la final.</span>
-                </div>
-                <div class="match">
-                    <div class="match-title"><span class="winner">🇦🇷 Argentina</span> <span>vs</span> <span class="loser">🇧🇷 Brasil</span></div>
-                    <span class="note">2-1. Clásico áspero, el arbitraje deja jugar para dar dramatismo. Gol de Messi de tiro libre al borde del área.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SLIDE 6: LA GRAN FINAL -->
-    <div class="slide" id="slide-5">
-        <h2 style="text-align: center;">🏆 LA GRAN FINAL (19 de Julio - MetLife)</h2>
-        <div class="grid-3">
-            <div class="card sc1">
-                <div class="card-header">
-                    <h2>📊 Base</h2>
-                    <div class="match-title" style="justify-content: center; font-size: 1.3rem;">🇦🇷 ARG vs ESP 🇪🇸</div>
-                </div>
-                <p><strong>Resultado: 2-2 (Argentina gana 4-2 en Penales)</strong></p>
-                <p class="note">El ciclo Scaloni es letal en finales. España domina el juego, Argentina los momentos. El "Dibu" vuelve a atajar dos penales en la tanda. Retiro dorado de Messi.</p>
-                <div class="champion">🏆 CAMPEÓN: ARGENTINA</div>
-            </div>
-            <div class="card sc2">
-                <div class="card-header">
-                    <h2>🌪️ Caos</h2>
-                    <div class="match-title" style="justify-content: center; font-size: 1.3rem;">🇪🇸 ESP vs ENG 🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
-                </div>
-                <p><strong>Resultado: 2-1 (Tiempo Regular)</strong></p>
-                <p class="note">Sin Argentina en el camino, España desfila. Repetición de la final de la Eurocopa 2024. El juego de posesión aplasta la ansiedad histórica inglesa. Inglaterra vuelve a ahogarse en la orilla.</p>
-                <div class="champion">🏆 CAMPEÓN: ESPAÑA</div>
-            </div>
-            <div class="card sc3">
-                <div class="card-header">
-                    <h2>💰 Negocio</h2>
-                    <div class="match-title" style="justify-content: center; font-size: 1.3rem;">🇫🇷 FRA vs ARG 🇦🇷</div>
-                </div>
-                <p><strong>Resultado: 3-2 (Francia en Prórroga)</strong></p>
-                <p class="note"><strong>"The Ultimate Rematch"</strong>. El producto más taquillero que el fútbol puede ofrecer. FIFA empuja para reeditar la final de 2022. Mbappé marca la diferencia al final, relevo generacional televisado a billones. La venganza se consuma.</p>
-                <div class="champion">🏆 CAMPEÓN: FRANCIA</div>
-            </div>
-        </div>
-    </div>
+<div class="nav-container" id="navTabs">
+    <!-- Generado dinámicamente -->
 </div>
 
-<div class="controls">
-    <button id="prevBtn" onclick="changeSlide(-1)" disabled>◀ Fase Anterior</button>
-    <span class="progress" id="slideIndicator">1 / 6</span>
-    <button id="nextBtn" onclick="changeSlide(1)">Siguiente Fase ▶</button>
+<div class="container">
+    <div class="scenarios-grid" id="contentGrid">
+        <!-- Generado dinámicamente por JS -->
+    </div>
 </div>
 
 <script>
-    let currentSlide = 0;
-    const totalSlides = 6;
+    // DATA ESTRUCTURADA DE LOS 3 ESCENARIOS PARA REDUCIR COMPLEJIDAD Y TOKEN BURDEN
+    const config = {
+        sc1: { name: "📊 1. Modelo Lógico", prob: "55%", class: "sc1" },
+        sc2: { name: "🌪️ 2. Modelo Caos", prob: "25%", class: "sc2" },
+        sc3: { name: "💰 3. Modelo Comercial", prob: "20%", class: "sc3" }
+    };
 
-    function changeSlide(direction) {
-        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
-        currentSlide += direction;
-        
-        if (currentSlide < 0) currentSlide = 0;
-        if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
-        
-        document.getElementById(`slide-${currentSlide}`).classList.add('active');
-        
-        // Update UI
-        document.getElementById('prevBtn').disabled = currentSlide === 0;
-        document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
-        
-        const phases = ["Bases de Escenarios", "Dieciseisavos", "Octavos", "Cuartos", "Semifinales", "La Final"];
-        document.getElementById('slideIndicator').innerText = `Fase ${currentSlide + 1} de 6: ${phases[currentSlide]}`;
+    const phasesData = {
+        "grp_ad": {
+            name: "Grupos A - D",
+            sc1: {
+                standings: "<div class='standings-title'>Clasificación Prevista:</div>Grp A: 1° 🇲🇽 MEX (7), 2° 🇨🇿 CHE (5), 3° 🇰🇷 KOR (4)*, 4° 🇿🇦 RSA (0)<br>Grp B: 1° 🇨🇦 CAN (7), 2° 🇨🇭 SUI (5), 3° 🇧🇦 BIH (4)*, 4° 🇶🇦 QAT (0)<br>Grp C: 1° 🇧🇷 BRA (7), 2° 🇲🇦 MAR (6), 3° 🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO (4)*, 4° 🇭🇹 HAI (0)<br>Grp D: 1° 🇺🇸 USA (7), 2° 🇹🇷 TUR (5), 3° 🇵🇾 PAR (4)*, 4° 🇦🇺 AUS (0)",
+                matches: [
+                    { t: "🇲🇽 MEX 2-0 🇿🇦 RSA", c: "75%", j: "Fortaleza extrema e historia local en inauguraciones." },
+                    { t: "🇰🇷 KOR 1-1 🇨🇿 CHE", c: "60%", j: "Bloque bajo checo neutraliza la velocidad de Son." },
+                    { t: "🇨🇿 CHE 2-1 🇿🇦 RSA", c: "65%", j: "Físico europeo se impone en transiciones de ataque." },
+                    { t: "🇲🇽 MEX 2-1 🇰🇷 KOR", c: "60%", j: "El clima y el Azteca ahogan el mediocampo asiático." },
+                    { t: "🇨🇿 CHE 1-1 🇲🇽 MEX", c: "70%", j: "México rota piezas regulando cargas físicas." },
+                    { t: "🇰🇷 KOR 2-0 🇿🇦 RSA", c: "80%", j: "Sudáfrica llega eliminada y sin pegada en las áreas." },
+                    { t: "🇨🇦 CAN 2-1 🇧🇦 BIH", c: "55%", j: "Toronto empuja; transiciones cortan la lentitud bosnia." },
+                    { t: "🇨🇭 SUI 2-0 🇶🇦 QAT", c: "85%", j: "Diferencia abismal de oficio competitivo internacional." },
+                    { t: "🇨🇦 CAN 3-0 🇶🇦 QAT", c: "80%", j: "Canadá castiga los errores defensivos en velocidad." },
+                    { t: "🇨🇭 SUI 1-1 🇧🇦 BIH", c: "55%", j: "Fricción táctica alpino-balcánica, empate clásico." },
+                    { t: "🇨🇦 CAN 1-1 🇨🇭 SUI", c: "70%", j: "Resultado de conveniencia mutua para asegurar pase." },
+                    { t: "🇧🇦 BIH 2-0 🇶🇦 QAT", c: "75%", j: "Džeko se despide imponiendo su juego aéreo." },
+                    { t: "🇧🇷 BRA 1-0 🇲🇦 MAR", c: "65%", j: "Vinícius desatasca un partido defensivo brillante." },
+                    { t: "🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO 2-0 🇭🇹 HAI", c: "80%", j: "Juego directo escocés es demasiado para Haití." },
+                    { t: "🇧🇷 BRA 3-0 🇭🇹 HAI", c: "90%", j: "Paseo brasileño incluso cuidando soldados clave." },
+                    { t: "🇲🇦 MAR 2-1 🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO", c: "65%", j: "La calidad asociativa marroquí supera la fuerza británica." },
+                    { t: "🇧🇷 BRA 1-1 🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO", c: "60%", j: "Brasil rota plantilla entera; Escocia araña el milagro." },
+                    { t: "🇲🇦 MAR 3-0 🇭🇹 HAI", c: "85%", j: "Dominio absoluto del balón y ritmo caribeño quebrado." },
+                    { t: "🇺🇸 USA 2-1 🇵🇾 PAR", c: "60%", j: "Seattle empuja el libreto vertical de Pochettino." },
+                    { t: "🇹🇷 TUR 2-1 🇦🇺 AUS", c: "65%", j: "El talento puro de Arda Güler quiebra el orden australiano." },
+                    { t: "🇺🇸 USA 1-0 🇦🇺 AUS", c: "70%", j: "Presión alta sostenida; Australia carece de salida limpia." },
+                    { t: "🇵🇾 PAR 1-1 🇹🇷 TUR", c: "55%", j: "Alfaro cierra los caminos con un cerrojo clásico." },
+                    { t: "🇺🇸 USA 1-1 🇹🇷 TUR", c: "65%", j: "Pacto implícito de no agresión al saberse clasificados." },
+                    { t: "🇵🇾 PAR 2-1 🇦🇺 AUS", c: "60%", j: "La garra paraguaya castiga las contras oceánicas." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='standings-title'>Clasificación Caos:</div>Grp A: 1° 🇰🇷 KOR (7), 2° 🇲🇽 MEX (5), 3° 🇨🇿 CHE (2), 4° 🇿🇦 RSA (1)<br>Grp B: 1° 🇨🇭 SUI (7), 2° 🇧🇦 BIH (5), 3° 🇨🇦 CAN (2), 4° 🇶🇦 QAT (1)<br>Grp C: 1° 🇲🇦 MAR (7), 2° 🇧🇷 BRA (5), 3° 🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO (4)*, 4° 🇭🇹 HAI (0)<br>Grp D: 1° 🇹🇷 TUR (7), 2° 🇵🇾 PAR (5), 3° 🇺🇸 USA (4)*, 4° 🇦🇺 AUS (0)",
+                matches: [
+                    { t: "🇲🇽 MEX 1-1 🇿🇦 RSA", c: "45%", j: "Los nervios congelan al Tri; batacazo inaugural." },
+                    { t: "🇰🇷 KOR 2-1 🇨🇿 CHE", c: "50%", j: "Son castiga en el minuto 89 un error de salida checo." },
+                    { t: "🇲🇽 MEX 1-2 🇰🇷 KOR", c: "40%", j: "Contragolpe letal asiático enmudece el Azteca." },
+                    { t: "🇨🇦 CAN 0-1 🇧🇦 BIH", c: "45%", j: "Alphonso Davies se resiente de su lesión; colapso canadiense." },
+                    { t: "🇨🇭 SUI 1-1 🇶🇦 QAT", c: "35%", j: "Exceso de confianza suizo genera la sorpresa del grupo." },
+                    { t: "🇧🇷 BRA 0-0 🇲🇦 MAR", c: "50%", j: "Las bajas defensivas obligan a Brasil a un juego timorato." },
+                    { t: "🇺🇸 USA 0-1 🇵🇾 PAR", c: "40%", j: "Masterclass táctica de Gustavo Alfaro desesperando a USA." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='standings-title'>Clasificación Sesgo Comercial:</div>Grp A: 1° 🇲🇽 MEX (9), 2° 🇨🇿 CHE (4), 3° 🇰🇷 KOR (4)*, 4° 🇿🇦 RSA (0)<br>Grp B: 1° 🇨🇦 CAN (9), 2° 🇨🇭 SUI (4), 3° 🇧🇦 BIH (4)*, 4° 🇶🇦 QAT (0)<br>Grp C: 1° 🇧🇷 BRA (9), 2° 🇲🇦 MAR (6), 3° 🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO (3), 4° 🇭🇹 HAI (0)<br>Grp D: 1° 🇺🇸 USA (9), 2° 🇹🇷 TUR (4), 3° 🇵🇾 PAR (4)*, 4° 🇦🇺 AUS (0)",
+                matches: [
+                    { t: "🇲🇽 MEX 3-0 🇿🇦 RSA", c: "80%", j: "Penal dudoso abre el partido para no apagar el rating del local." },
+                    { t: "🇲🇽 MEX 2-0 🇰🇷 KOR", c: "75%", j: "VAR milimétrico anula el empate coreano por supuesto offside." },
+                    { t: "🇨🇦 CAN 2-1 🇨🇭 SUI", c: "65%", j: "Falta al borde del área le da a Canadá el gol de la clasificación." },
+                    { t: "🇧🇷 BRA 2-0 🇲🇦 MAR", c: "75%", j: "Arbitraje muy estricto con las marcas sobre Vinícius Jr." },
+                    { t: "🇺🇸 USA 2-1 🇹🇷 TUR", c: "70%", j: "Adicionado generoso de 8 minutos permite el gol del triunfo gringo." }
+                ]
+            }
+        },
+        "grp_eh": {
+            name: "Grupos E - H",
+            sc1: {
+                standings: "<div class='standings-title'>Clasificación Prevista:</div>Grp E: 1° 🇩🇪 GER (7), 2° 🇪🇨 ECU (7), 3° 🇨🇮 CIV (3)*, 4° 🇨🇺 CUW (0)<br>Grp F: 1° 🇳🇱 NED (7), 2° 🇯🇵 JPN (7), 3° 🇸🇪 SWE (3), 4° 🇹🇳 TUN (0)<br>Grp G: 1° 🇧🇪 BEL (9), 2° 🇪🇬 EGY (4), 3° 🇮🇷 IRN (4)*, 4° 🇳🇿 NZL (0)<br>Grp H: 1° 🇪🇸 ESP (7), 2° 🇺🇾 URU (7), 3° 🇸🇦 KSA (3), 4° 🇨🇻 CPV (0)",
+                matches: [
+                    { t: "🇩🇪 GER 4-0 🇨🇺 CUW", c: "90%", j: "Abismo técnico insalvable entre planteles." },
+                    { t: "🇪🇨 ECU 1-0 🇨🇮 CIV", c: "60%", j: "La mejor defensa de Conmebol impone su ley." },
+                    { t: "🇩🇪 GER 2-0 🇨🇮 CIV", c: "75%", j: "Musiala rompe líneas compactas con facilidad." },
+                    { t: "🇪🇨 ECU 2-0 🇨🇺 CUW", c: "85%", j: "Trámite físico resuelto en balones detenidos." },
+                    { t: "🇩🇪 GER 1-1 🇪🇨 ECU", c: "60%", j: "Ecuador se encierra y le saca puntos al favorito europeo." },
+                    { t: "🇳🇱 NED 1-1 🇯🇵 JPN", c: "55%", j: "Las bajas de la naranja equilibran el duelo ante la intensidad nipona." },
+                    { t: "🇸🇪 SWE 2-1 🇹🇳 TUN", c: "65%", j: "Isak resuelve un partido de extrema fricción." },
+                    { t: "🇳🇱 NED 2-0 🇸🇪 SWE", c: "70%", j: "Gakpo marca diferencias individuales en Houston." },
+                    { t: "🇯🇵 JPN 1-0 🇹🇳 TUN", c: "75%", j: "El orden táctico japonés desgasta el bloque africano." },
+                    { t: "🇯🇵 JPN 2-1 🇸🇪 SWE", c: "60%", j: "Transiciones rápidas destrozan la lenta zaga sueca." },
+                    { t: "🇧🇪 BEL 1-0 🇪🇬 EGY", c: "65%", j: "De Bruyne define el duelo táctico ante un Salah solitario." },
+                    { t: "🇪🇸 ESP 3-0 🇨🇻 CPV", c: "90%", j: "El campeón de Europa circula el balón sin oposición." },
+                    { t: "🇺🇾 URU 2-0 🇸🇦 KSA", c: "80%", j: "Presión asfixiante de Bielsa destruye el esquema saudí." },
+                    { t: "🇪🇸 ESP 1-1 🇺🇾 URU", c: "60%", j: "Uruguay incomoda el estilo de toque de España con intensidad física." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='standings-title'>Clasificación Caos:</div>Grp E: 1° 🇪🇨 ECU (9), 2° 🇩🇪 GER (6), 3° 🇨🇮 CIV (3), 4° 🇨🇺 CUW (0)<br>Grp F: 1° 🇯🇵 JPN (7), 2° 🇸🇪 SWE (4), 3° 🇳🇱 NED (4)*, 4° 🇹🇳 TUN (1)<br>Grp G: 1° 🇪🇬 EGY (7), 2° 🇧🇪 BEL (6), 3° 🇮🇷 IRN (2), 4° 🇳🇿 NZL (1)<br>Grp H: 1° 🇺🇾 URU (9), 2° 🇪🇸 ESP (6), 3° 🇸🇦 KSA (3), 4° 🇨🇻 CPV (0)",
+                matches: [
+                    { t: "🇩🇪 GER 0-1 🇪🇨 ECU", c: "40%", j: "Bloqueo perfecto ecuatoriano frustra a la zaga alemana." },
+                    { t: "🇳🇱 NED 1-2 🇸🇪 SWE", c: "45%", j: "Errores groseros de la parchada defensa neerlandesa." },
+                    { t: "🇳🇱 NED 1-1 🇹🇳 TUN", c: "40%", j: "Fracaso rotundo naranja al no quebrar el arco tunecino." },
+                    { t: "🇧🇪 BEL 1-2 🇪🇬 EGY", c: "45%", j: "Contragolpe magistral de Mo Salah tumba a los diablos." },
+                    { t: "🇪🇸 ESP 1-2 🇺🇾 URU", c: "35%", j: "¡ESTALLA EL CUADRO! Bielsa embosca a España y la manda al 2° lugar." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='standings-title'>Clasificación Sesgo Comercial:</div>Grp E: 1° 🇩🇪 GER (9), 2° 🇪🇨 ECU (6), 3° 🇨🇮 CIV (3), 4° 🇨🇺 CUW (0)<br>Grp F: 1° 🇳🇱 NED (7), 2° 🇯🇵 JPN (7), 3° 🇸🇪 SWE (3), 4° 🇹🇳 TUN (0)<br>Grp G: 1° 🇧🇪 BEL (7), 2° 🇪🇬 EGY (7), 3° 🇮🇷 IRN (3), 4° 🇳🇿 NZL (0)<br>Grp H: 1° 🇪🇸 ESP (7), 2° 🇺🇾 URU (7), 3° 🇸🇦 KSA (3), 4° 🇨🇻 CPV (0)",
+                matches: [
+                    { t: "🇩🇪 GER 2-1 🇪🇨 ECU", c: "75%", j: "Falta milimétrica previa le quita el empate a Ecuador en el 92." },
+                    { t: "🇪🇬 EGY 1-1 🇧🇪 BEL", c: "65%", j: "Penal cobrado a Salah asegura su gol y el mercado de Medio Oriente sonríe." },
+                    { t: "🇪🇸 ESP 2-1 🇺🇾 URU", c: "70%", j: "Tarjetas amarillas tempranas condicionan la intensidad charrúa." }
+                ]
+            }
+        },
+        "grp_il": {
+            name: "Grupos I - L",
+            sc1: {
+                standings: "<div class='standings-title'>Clasificación Prevista:</div>Grp I: 1° 🇫🇷 FRA (7), 2° 🇳🇴 NOR (5), 3° 🇸🇳 SEN (4)*, 4° 🇮🇶 IRQ (0)<br>Grp J: 1° 🇦🇷 ARG (9), 2° 🇦🇹 AUT (6), 3° 🇩🇿 ALG (3)*, 4° 🇯🇴 JOR (0)<br>Grp K: 1° 🇵🇹 POR (7), 2° 🇨🇴 COL (7), 3° 🇺🇿 UZB (1), 4° 🇨🇩 COD (1)<br>Grp L: 1° 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG (9), 2° 🇭🇷 CRO (6), 3° 🇬🇭 GHA (1), 4° 🇵🇦 PAN (1)",
+                matches: [
+                    { t: "🇫🇷 FRA 1-0 🇸🇳 SEN", c: "70%", j: "Mbappé rompe la paridad en un duelo muy físico." },
+                    { t: "🇳🇴 NOR 2-0 🇮🇶 IRQ", c: "85%", j: "Haaland festeja el regreso noruego tras 28 años de sequía." },
+                    { t: "🇫🇷 FRA 2-2 🇳🇴 NOR", c: "60%", j: "Duelo generacional espectacular; Mbappé y Haaland firman dobletes." },
+                    { t: "🇦🇷 ARG 2-0 🇩🇿 ALG", c: "85%", j: "Control absoluto del mediocampo de la Scaloneta; goles de Julián y Messi." },
+                    { t: "🇦🇹 AUT 2-0 🇯🇴 JOR", c: "80%", j: "El 'Gegenpressing' de Rangnick asfixia el debut de Jordania." },
+                    { t: "🇦🇷 ARG 1-0 🇦🇹 AUT", c: "65%", j: "El partido más incómodo; Messi destraba el muro de pelota parada." },
+                    { t: "🇵🇹 POR 2-0 🇨🇩 COD", c: "80%", j: "Cristiano Ronaldo factura en su sexto mundial." },
+                    { t: "🇨🇴 COL 2-0 🇺🇿 UZB", c: "75%", j: "Luis Díaz y James Rodríguez demuestran su vigencia técnica." },
+                    { t: "🇵🇹 POR 1-1 🇨🇴 COL", c: "60%", j: "Partidazo de alto vuelo técnico que sella la clasificación de ambos." },
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 2-0 🇭🇷 CRO", c: "70%", j: "Revancha de 2018. El mediocampo inglés desborda a un Modric de 40 años." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='standings-title'>Clasificación Caos:</div>Grp I: 1° 🇳🇴 NOR (7), 2° 🇫🇷 FRA (5), 3° 🇸🇳 SEN (4)*, 4° 🇮🇶 IRQ (0)<br>Grp J: 1° 🇦🇷 ARG (7), 2° 🇦🇹 AUT (7), 3° 🇩🇿 ALG (3), 4° 🇯🇴 JOR (0)<br>Grp K: 1° 🇨🇴 COL (7), 2° 🇵🇹 POR (5), 3° 🇺🇿 UZB (2), 4° 🇨🇩 COD (1)<br>Grp L: 1° 🇭🇷 CRO (7), 2° 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG (6), 3° 🇬🇭 GHA (2), 4° 🇵🇦 PAN (1)",
+                matches: [
+                    { t: "🇫🇷 FRA 1-2 🇳🇴 NOR", c: "45%", j: "Hat-trick fallido de Mbappé; Haaland liquida de contra." },
+                    { t: "🇦🇷 ARG 1-1 🇦🇹 AUT", c: "50%", j: "Messi guardado preventivamente por fatiga; Austria saca petróleo." },
+                    { t: "🇵🇹 POR 1-2 🇨🇴 COL", c: "45%", j: "Luis Díaz baila a la zaga lusa en una noche mágica." },
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 0-1 🇭🇷 CRO", c: "40%", j: "Modric maneja los hilos e Inglaterra peca de fría." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='standings-title'>Clasificación Sesgo Comercial:</div>Grp I: 1° 🇫🇷 FRA (7), 2° 🇳🇴 NOR (5), 3° 🇸🇳 SEN (4)*, 4° 🇮🇶 IRQ (0)<br>Grp J: 1° 🇦🇷 ARG (9), 2° 🇦🇹 AUT (6), 3° 🇩🇿 ALG (3), 4° 🇯🇴 JOR (0)<br>Grp K: 1° 🇵🇹 POR (9), 2° 🇨🇴 COL (6), 3° 🇺🇿 UZB (1), 4° 🇨🇩 COD (1)<br>Grp L: 1° 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG (9), 2° 🇭🇷 CRO (6), 3° 🇬🇭 GHA (1), 4° 🇵🇦 PAN (1)",
+                matches: [
+                    { t: "🇦🇷 ARG 3-0 🇯🇴 JOR", c: "85%", j: "Dos penales cobrados para Messi aseguran el liderato de goleo inicial." },
+                    { t: "🇵🇹 POR 2-0 🇺🇿 UZB", c: "80%", j: "Cristiano factura un penal característico bajo los focos de TV." },
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 3-0 🇵🇦 PAN", c: "85%", j: "Trámite plácido protegido por arbitraje severo ante el juego físico." }
+                ]
+            }
+        },
+        "16avos": {
+            name: "Dieciseisavos de Final",
+            sc1: {
+                standings: "<div class='standings-title'>Análisis de Llaves:</div>Avanzan favoritos con paso firme. Croacia se rompe físicamente ante el desgaste.",
+                matches: [
+                    { t: "🇺🇸 USA 2-1 🇩🇿 ALG", c: "70%", j: "Sufrimiento agónico, pero el local impone localía en el epílogo." },
+                    { t: "🇦🇷 ARG 1-0 🇺🇾 URU", c: "65%", j: "El clásico del Río de la Plata se define por un tiro libre magistral de Messi." },
+                    { t: "🇨🇴 COL 1-1 (5-4 p) 🇭🇷 CRO", c: "55%", j: "Se rompe la estadística: Croacia llega fundida a los penales." },
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 2-0 🇸🇳 SEN", c: "75%", j: "Calco de Qatar 2022. Superioridad técnica inglesa en cada línea." },
+                    { t: "🇲🇽 MEX 2-1 🏴󠁧󠁢󠁳󠁣󠁴󠁿 SCO", c: "65%", j: "El Azteca explota. Escocia da pelea aérea pero carece de variantes." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='standings-title'>Análisis Caos:</div>¡La gran bomba del torneo! El cruce maldito provocado por el Grupo H.",
+                matches: [
+                    { t: "🇪🇸 ESP 2-1 🇦🇷 ARG", c: "55%", j: "¡BOMBA! La caída de España al 2° lugar del grupo provoca la eliminación prematura del campeón." },
+                    { t: "🇺🇾 URU 2-0 🇦🇹 AUT", c: "60%", j: "Bielsa aprovecha el envión del liderato de grupo." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='standings-title'>Análisis Sesgo Comercial:</div>Los gigantes protegen los derechos de transmisión televisivos mundiales.",
+                matches: [
+                    { t: "🇺🇸 USA 2-1 🇩🇿 ALG", c: "75%", j: "Penal milimétrico revisado en el VAR al 94 premia al anfitrión de oro." },
+                    { t: "🇦🇷 ARG 2-0 🇺🇾 URU", c: "70%", j: "Uruguay se llena de amarillas temprano y pierde agresividad de marca." }
+                ]
+            }
+        },
+        "octavos": {
+            name: "Octavos de Final",
+            sc1: {
+                standings: "<div class='standings-title'>Resumen de Fase:</div>Se reacomoda el orden histórico. Inglaterra frena los corazones locales.",
+                matches: [
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 2-1 (TE) 🇲🇽 MEX", c: "60%", j: "Corrección de sensibilidades: Bellingham silencia el Azteca en la prórroga." },
+                    { t: "🇧🇷 BRA 3-2 🇳🇴 NOR", c: "65%", j: "Haaland asusta con doblete pero el ataque de Vini responde." },
+                    { t: "🇺🇸 USA 3-2 (TE) 🇧🇪 BEL", c: "55%", j: "Pulisic cobra revancha de la noche de Tim Howard en 2014." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='standings-title'>Resumen Caos:</div>Alemania revive gracias al desorden del cuadro izquierdo.",
+                matches: [
+                    { t: "🇪🇸 ESP 3-0 🇹🇷 TUR", c: "70%", j: "Sin Argentina cerca, España domina la posesión sin despeinarse." },
+                    { t: "🇧🇷 BRA 2-1 🇫🇷 FRA", c: "50%", j: "Choque de titanes prematuro debido al efecto Noruega en fase de grupos." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='standings-title'>Resumen Sesgo Comercial:</div>El quinto partido mexicano más rentable de la historia.",
+                matches: [
+                    { t: "🇲🇽 MEX 1-1 (4-3 p) 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG", c: "55%", j: "Gol anulado a Kane por offside invisible. Delirio nacional y picos de rating." },
+                    { t: "🇺🇸 USA 2-0 🇧🇪 BEL", c: "65%", j: "Arbitraje meticuloso cuida los tobillos de las figuras locales." }
+                ]
+            }
+        },
+        "cuartos": {
+            name: "Cuartos de Final",
+            sc1: {
+                standings: "<div class='standings-title'>Camino a Semis:</div>Partidos de ajedrez puro. Messi vs Cristiano se vuelve realidad.",
+                matches: [
+                    { t: "🇦🇷 ARG 2-1 🇵🇹 POR", c: "60%", j: "El partido del siglo. Mac Allister y Lautaro lo dan vuelta. Lágrimas de CR7." },
+                    { t: "🇪🇸 ESP 2-0 🇺🇸 USA", c: "75%", j: "España pone hielo al partido con 70% de posesión en Los Ángeles." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='standings-title'>Camino Caos:</div>Las ausencias sepultan las aspiraciones sudamericanas.",
+                matches: [
+                    { t: "🇩🇪 GER 2-0 🇲🇦 MAR", c: "60%", j: "Alemania aprovecha el cuadro blando y se mete a semis." },
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 2-0 🇵🇹 POR", c: "65%", j: "Inglaterra despacha a un Cristiano solitario y desgastado." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='standings-title'>Camino Sesgo Comercial:</div>¡Milagro absoluto en Norteamérica para la industria bursátil!",
+                matches: [
+                    { t: "🇺🇸 USA 2-1 🇪🇸 ESP", c: "50%", j: "Roja directa rigurosa a un central español. USA rompe la banca y va a semis." },
+                    { t: "🇦🇷 ARG 2-2 (4-3 p) 🇵🇹 POR", c: "65%", j: "Empate agónico televisado a 3 mil millones de personas. El Dibu salva el negocio." }
+                ]
+            }
+        },
+        "finales": {
+            name: "Semis y Final",
+            sc1: {
+                standings: "<div class='champion-banner'>🏆 CAMPEÓN PREVISTO: 🇦🇷 ARGENTINA (4° Estrella)</div>",
+                matches: [
+                    { t: "🇪🇸 ESP 2-1 🇫🇷 FRA (Semi)", c: "60%", j: "Lamine Yamal repite la dosis de la Eurocopa ante Mbappé." },
+                    { t: "🇦🇷 ARG 1-1 (4-2 p) 🇧🇷 BRA (Semi)", c: "55%", j: "El Dibu Martínez ataja dos penales ante el fantasma de las bajas cariocas." },
+                    { t: "🇦🇷 ARG 2-2 (4-2 p) 🇪🇸 ESP (FINAL)", c: "55%", j: "Mística y penales. El ciclo Scaloni es perfecto en finales largas." }
+                ]
+            },
+            sc2: {
+                standings: "<div class='champion-banner'>🏆 CAMPEÓN CAOS: 🇪🇸 ESPAÑA (2° Estrella)</div>",
+                matches: [
+                    { t: "🇪🇸 ESP 2-0 🇩🇪 GER (Semi)", c: "65%", j: "El mejor funcionamiento colectivo no perdona el recambio alemán." },
+                    { t: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG 1-0 🇧🇷 BRA (Semi)", c: "55%", j: "Inglaterra duerme el ritmo ante un Brasil que llegó fundido." },
+                    { t: "🇪🇸 ESP 2-1 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG (FINAL)", c: "65%", j: "Repetición de la Euro 2024; el fútbol de toque castiga el miedo inglés." }
+                ]
+            },
+            sc3: {
+                standings: "<div class='champion-banner'>🏆 CAMPEÓN COMERCIAL: 🇫🇷 FRANCIA (3° Estrella)</div>",
+                matches: [
+                    { t: "🇫🇷 FRA 3-1 🇺🇸 USA (Semi)", c: "75%", j: "Fin del cuento de hadas. Interesa más la marca de Europa para la final." },
+                    { t: "🇦🇷 ARG 2-1 🇧🇷 BRA (Semi)", c: "60%", j: "Messi destraba el partido con un tiro libre icónico." },
+                    { t: "🇫🇷 FRA 3-2 (TE) 🇦🇷 ARG (FINAL)", c: "55%", j: "The Ultimate Rematch. Mbappé sella el relevo generacional de oro ante billones." }
+                ]
+            }
+        }
+    };
+
+    // MOTOR DE RENDERIZADO DEL DASHBOARD INTERACTIVO
+    function initDashboard() {
+        const navContainer = document.getElementById('navTabs');
+        let initial = true;
+
+        for (const [key, phase] of Object.entries(phasesData)) {
+            const btn = document.createElement('button');
+            btn.className = `nav-btn ${initial ? 'active' : ''}`;
+            btn.innerText = phase.name;
+            btn.onclick = () => renderPhase(key, btn);
+            navContainer.appendChild(btn);
+            if (initial) {
+                renderPhase(key, btn);
+                initial = false;
+            }
+        }
     }
+
+    function renderPhase(phaseKey, clickedBtn) {
+        // Manejo de clases activas en botones de navegación
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        clickedBtn.classList.add('active');
+
+        const grid = document.getElementById('contentGrid');
+        grid.innerHTML = ''; // Limpiar pantalla
+
+        const phase = phasesData[phaseKey];
+
+        // Crear columnas para cada uno de los 3 escenarios en paralelo
+        ['sc1', 'sc2', 'sc3'].forEach(scKey => {
+            const scInfo = config[scKey];
+            const scPhaseData = phase[scKey];
+
+            const col = document.createElement('div');
+            col.className = `column ${scInfo.class}`;
+
+            let matchesHTML = '';
+            if (scPhaseData && scPhaseData.matches && scPhaseData.matches.length > 0) {
+                scPhaseData.matches.forEach(m => {
+                    matchesHTML += `
+                        <div class="match-card">
+                            <div class="match-meta"><span>Predicción Oficial</span> <span class="cert-badge">Certeza: ${m.c}</span></div>
+                            <div class="match-teams">${m.t}</div>
+                            <div class="match-just">${m.j}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                matchesHTML = `<p style="color: var(--text-muted); font-style: italic; text-align: center; padding: 20px;">Los resultados se mantienen idénticos a la matriz lógica en esta fase.</p>`;
+            }
+
+            col.innerHTML = `
+                <div class="col-header">
+                    <h2>${scInfo.name}</h2>
+                    <span class="probability">Factibilidad: ${scInfo.prob}</span>
+                </div>
+                <div class="standings-box">
+                    ${scPhaseData ? scPhaseData.standings : 'Sin alteraciones estructurales.'}
+                </div>
+                ${matchesHTML}
+            `;
+            grid.appendChild(col);
+        });
+    }
+
+    window.onload = initDashboard;
 </script>
 
 </body>
